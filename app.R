@@ -31,7 +31,6 @@ options(DT.options = list(
 #                        "LemonChiffon", "SeaShell")
 
 ui <- fluidPage(
-  
   theme = "bootstrap.min.css",
   titlePanel("El Slammer"),  
   setBackgroundColor("GhostWhite", gradient = "linear", direction = "top"),
@@ -56,7 +55,7 @@ server <- function(input, output, session) {
   
   values$df <- data.frame(move = NA, date_time = NA)
 
-  messages <- c(
+messages <- c(
     paste0("El baño excellente ", emo::ji("nerd")),
     paste0("Get low ", emo::ji("fire")),
     paste0("Good dog! ", emo::ji("winner")), 
@@ -74,13 +73,12 @@ server <- function(input, output, session) {
     paste0("Huzzah! ", emo::ji("hooray"))
   )
 
-
   observeEvent(input$group1, {
     shinyalert(sample(messages, 1), emo::ji("dog"))
     insertUI(selector = "#group1",
-             where = "afterEnd",
-             ui = tags$audio(src = "sound.mp3", type = "audio/mp3", autoplay = NA, controls = NA, style = "display:none;")
-    )    
+                 where = "afterEnd",
+                 ui = tags$audio(src = "sound.mp3", type = "audio/mp3", autoplay = T, controls = NA, style="display:none;")
+        )
     newLine <- c("Poop", date())
     isolate(values$df <- rbind(values$df, newLine))
     saveData(values$df)
@@ -88,13 +86,17 @@ server <- function(input, output, session) {
 
   observeEvent(input$group2, { 
     shinyalert(sample(messages, 1), emo::ji("dog"))
-    beep(0)
+    insertUI(selector = "#group2",
+                 where = "afterEnd",
+                 ui = tags$audio(src = "sound.wav", type = "audio/wav", autoplay = T, controls = NA, style="display:none;")
+        )
+    beep("/srv/shiny-server/slammer/www/sound.wav")
     newLine <- c("Pee", date())
     isolate(values$df <- rbind(values$df, newLine))
     saveData(values$df)
   })
-  
-  observeEvent(input$group3, { 
+
+ observeEvent(input$group3, { 
     shinyalert(sample(messages, 1), emo::ji("dog"))
     beep(0)
     newLine <- c("Double Feature", date())
@@ -103,9 +105,9 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$delete_btn, {
-    tmpshot <- fileSnapshot("~/slammer/responses")
+    tmpshot <- fileSnapshot("/srv/shiny-server/slammer/responses")
     file_name <- rownames(tmpshot$info[which.max(tmpshot$info$mtime),])
-    mistake_file <- paste0("~/slammer/responses/",file_name)
+    mistake_file <- paste0("/srv/shiny-server/slammer/responses/",file_name)
     file.remove(mistake_file)
     session$reload()
   })
