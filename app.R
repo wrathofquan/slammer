@@ -7,6 +7,7 @@ library(emo)
 library(DT)
 library(gfonts)
 library(beepr)
+library(lubridate)
 
 options(DT.options = list(
   pageLength = 90,
@@ -105,16 +106,16 @@ messages <- c(
   })
   
   observeEvent(input$delete_btn, {
-    tmpshot <- fileSnapshot("/srv/shiny-server/slammer/responses")
+    tmpshot <- fileSnapshot("./responses")
     file_name <- rownames(tmpshot$info[which.max(tmpshot$info$mtime),])
-    mistake_file <- paste0("/srv/shiny-server/slammer/responses/",file_name)
+    mistake_file <- paste0("./responses/",file_name)
     file.remove(mistake_file)
     session$reload()
   })
   
 
   output$table <- renderDataTable({
-    rownames = FALSE
+    rownames = TRUE
     values$df
     loadData()
   })
