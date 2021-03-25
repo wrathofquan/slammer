@@ -13,8 +13,7 @@ options(DT.options = list(
   pageLength = 90,
   dom = "t",
   order = list(
-    list(2, "desc"),
-    list(1, "desc")
+    list(2, "desc")
   )
 ))
 
@@ -91,7 +90,7 @@ messages <- c(
                  where = "afterEnd",
                  ui = tags$audio(src = "sound.wav", type = "audio/wav", autoplay = T, controls = NA, style="display:none;")
         )
-    beep("/srv/shiny-server/slammer/www/sound.wav")
+    beep("./www/sound.wav")
     newLine <- c("Pee", date())
     isolate(values$df <- rbind(values$df, newLine))
     saveData(values$df)
@@ -115,6 +114,7 @@ messages <- c(
   
 
   output$table <- renderDataTable({
+    DT::datatable(values$df) %>% formatDate(2, "toLocaleString")
     rownames = TRUE
     values$df
     loadData()
